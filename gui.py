@@ -291,8 +291,17 @@ class MediaDownloaderApp(ctk.CTk):
             messagebox.showwarning("FFmpeg Não Encontrado", "O mecanismo FFmpeg não foi encontrado localmente.")
         
         def run_update():
-            update_ytdlp()
+            # Chama o updater passando o log e capturando o sucesso/falha
+            atualizado = update_ytdlp(log_callback=self.log)
+            if atualizado:
+                # Dispara a mensagem na thread principal da interface gráfica
+                self.after(0, lambda: messagebox.showinfo(
+                    "Atualização Concluída", 
+                    "O motor de download (yt-dlp) foi atualizado com sucesso para a versão mais recente!"
+                ))
+
         threading.Thread(target=run_update, daemon=True).start()
+
 
     def log(self, msg):
         print(msg)
